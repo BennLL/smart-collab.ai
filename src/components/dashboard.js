@@ -110,9 +110,9 @@ function Dashboard({ session }) {
 
         <div className="border-b-2 border-gray-300 mb-4">
           <nav className="flex flex-col gap-4 text-indigo-200 grow mb-4">
-            <a className="text-lg font-medium hover:text-white transition">Dashboard</a>
-            <a className="text-lg font-medium hover:text-white transition">Projects</a>
-            <a className="text-lg font-medium hover:text-white transition">Settings</a>
+            <button className="text-lg font-medium hover:text-white transition">Dashboard</button>
+            <button className="text-lg font-medium hover:text-white transition">Projects</button>
+            <button className="text-lg font-medium hover:text-white transition">Settings</button>
           </nav>
         </div>
 
