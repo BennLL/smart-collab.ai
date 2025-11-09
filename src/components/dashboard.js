@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import ProjectCard from './projectCard'
-import { Link } from 'react-router-dom';
 
 function Dashboard({ session }) {
   const [projects, setProjects] = useState([])
@@ -111,9 +110,9 @@ function Dashboard({ session }) {
 
         <div className="border-b-2 border-gray-300 mb-4">
           <nav className="flex flex-col gap-4 text-indigo-200 grow mb-4">
-            <a href="" className="text-lg font-medium hover:text-white transition">Dashboard</a>
-            <a href="" className="text-lg font-medium hover:text-white transition">Projects</a>
-            <a href="" className="text-lg font-medium hover:text-white transition">Settings</a>
+            <a className="text-lg font-medium hover:text-white transition">Dashboard</a>
+            <a className="text-lg font-medium hover:text-white transition">Projects</a>
+            <a className="text-lg font-medium hover:text-white transition">Settings</a>
           </nav>
         </div>
 
