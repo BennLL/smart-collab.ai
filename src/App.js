@@ -21,10 +21,13 @@ function App() {
   }, [])
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f9fafb', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '1rem' }}>
-      {!session ? <Auth /> : <Dashboard session={session} />}
+    <div className="flex items-center  justify-center min-h-screen img bg-[url('https://images.pexels.com/photos/5212337/pexels-photo-5212337.jpeg?cs=srgb&dl=pexels-max-fischer-5212337.jpg')] bg-cover bg-center">
+      <div className="flex items-center justify-center p-12 bg-white  rounded-2xl">
+        {!session ? <Auth /> : <Dashboard session={session} />}
+      </div>
     </div>
-  )
+  );
+
 }
 
 export default App

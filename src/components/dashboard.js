@@ -7,10 +7,23 @@ function Dashboard({ session }) {
   const [newProjectName, setNewProjectName] = useState('')
   const [newProjectDesc, setNewProjectDesc] = useState('')
   const [joinKey, setJoinKey] = useState('')
+  const [profile, setProfile] = useState(null)
 
   const user = session?.user
 
-  // Fetch projects whenever user changes
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user) return
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('first_name, last_name')
+        .eq('id', user.id)
+        .single()
+      if (!error) setProfile(data)
+    }
+    fetchProfile()
+  }, [user])
+
   useEffect(() => {
     const fetchProjects = async () => {
       if (!user) return
@@ -117,7 +130,9 @@ function Dashboard({ session }) {
               marginBottom: '1rem',
             }}
           >
-            <h2 style={{ fontWeight: 'bold' }}>Welcome, {user.email}</h2>
+            <h2 style={{ fontWeight: 'bold' }}>
+              Welcome, {profile ? `${profile.first_name} ${profile.last_name}` : user.email}
+            </h2>
             <button
               onClick={logout}
               style={{
