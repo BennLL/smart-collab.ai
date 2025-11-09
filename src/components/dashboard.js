@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import ProjectCard from './projectCard'
+import { Link } from 'react-router-dom';
 
 function Dashboard({ session }) {
   const [projects, setProjects] = useState([])
