@@ -21,8 +21,10 @@ function App() {
   }, [])
 
   return (
-    <div className="flex items-center  justify-center min-h-screen img bg-[url('https://images.pexels.com/photos/5212337/pexels-photo-5212337.jpeg?cs=srgb&dl=pexels-max-fischer-5212337.jpg')] bg-cover bg-center">
-      <div className="flex items-center justify-center p-12 bg-white  rounded-2xl">
+    <div
+      className="flex items-center min-h-screen"
+    >
+      <div className="flex-1 bg-white rounded-2xl min-h-screen">
         {!session ? <Auth /> : <Dashboard session={session} />}
       </div>
     </div>

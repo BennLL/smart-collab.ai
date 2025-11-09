@@ -27,20 +27,16 @@ function Dashboard({ session }) {
   useEffect(() => {
     const fetchProjects = async () => {
       if (!user) return
-
       const { data, error } = await supabase
         .from('projects')
         .select('*')
         .order('created_at', { ascending: false })
-
       if (error) console.error('Fetch projects error:', error)
       else setProjects(data)
     }
-
     fetchProjects()
   }, [user])
 
-  // Create project
   const createProject = async (e) => {
     e.preventDefault()
     if (!user?.id) return alert('User session not ready')
@@ -57,14 +53,12 @@ function Dashboard({ session }) {
         return alert('Error creating project: ' + error.message)
       }
 
-      // Add creator as project member
       await supabase.from('project_members').insert([
         { project_id: data[0].id, user_id: user.id, role: 'owner' },
       ])
 
       setNewProjectName('')
       setNewProjectDesc('')
-      // Refresh project list
       const { data: refreshedProjects, error: fetchError } = await supabase.from('projects').select('*')
       if (!fetchError) setProjects(refreshedProjects)
     } catch (err) {
@@ -72,7 +66,6 @@ function Dashboard({ session }) {
     }
   }
 
-  // Join project
   const joinProject = async (e) => {
     e.preventDefault()
     if (!joinKey) return alert('Please enter a project key')
@@ -108,86 +101,122 @@ function Dashboard({ session }) {
   }
 
   return (
-    <>
-      {!user ? (
-        <p>Loading session...</p>
-      ) : (
-        <div
-          style={{
-            width: '100%',
-            maxWidth: '700px',
-            background: '#fff',
-            borderRadius: '12px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            padding: '1.5rem',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '1rem',
-            }}
-          >
-            <h2 style={{ fontWeight: 'bold' }}>
-              Welcome, {profile ? `${profile.first_name} ${profile.last_name}` : user.email}
-            </h2>
-            <button
-              onClick={logout}
-              style={{
-                background: '#ef4444',
-                color: 'white',
-                border: 'none',
-                padding: '0.4rem 0.8rem',
-                borderRadius: '6px',
-              }}
-            >
-              Logout
-            </button>
-          </div>
-
-          {/* Create Project */}
-          <form onSubmit={createProject} style={{ marginBottom: '1rem' }}>
-            <input
-              value={newProjectName}
-              onChange={(e) => setNewProjectName(e.target.value)}
-              placeholder="Project name"
-              style={{ width: '100%', marginBottom: '0.5rem', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc' }}
-            />
-            <input
-              value={newProjectDesc}
-              onChange={(e) => setNewProjectDesc(e.target.value)}
-              placeholder="Project description"
-              style={{ width: '100%', marginBottom: '0.5rem', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc' }}
-            />
-            <button style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px' }}>
-              Create Project
-            </button>
-          </form>
-
-          {/* Join Project */}
-          <form onSubmit={joinProject} style={{ marginBottom: '1.5rem' }}>
-            <input
-              value={joinKey}
-              onChange={(e) => setJoinKey(e.target.value)}
-              placeholder="Enter project join key"
-              style={{ width: '100%', marginBottom: '0.5rem', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc' }}
-            />
-            <button style={{ background: '#16a34a', color: '#fff', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px' }}>
-              Join Project
-            </button>
-          </form>
-
-          <h3 style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>Your Projects</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            {projects.map((p) => (
-              <ProjectCard key={p.id} project={p} userId={user.id} />
-            ))}
-          </div>
+    <div className="flex min-h-screen w-full bg-gray-50">
+      {/* Sidebar left */}
+      <aside className="w-64 bg-indigo-900 text-white flex flex-col p-6">
+        <div className="border-b-2 border-gray-300 mb-4">
+          <h1 className="text-3xl font-bold mb-4">Smart Collab</h1>
         </div>
-      )}
-    </>
+
+        <div className="border-b-2 border-gray-300 mb-4">
+          <nav className="flex flex-col gap-4 text-indigo-200 grow mb-4">
+            <a href="" className="text-lg font-medium hover:text-white transition">Dashboard</a>
+            <a href="" className="text-lg font-medium hover:text-white transition">Projects</a>
+            <a href="" className="text-lg font-medium hover:text-white transition">Settings</a>
+          </nav>
+        </div>
+
+
+        <div>
+          <h1 className="text-2xl font-bold mb-4">Active Projects</h1>
+          <ul>
+            {projects.map((p) => (
+              <li className="text-lg font-medium text-gray-300 hover:text-white transition hover:cursor-pointer">• {p.name}</li>
+            ))}
+          </ul>
+        </div>
+
+        <footer className="mt-auto pt-6 border-t border-white">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center font-bold text-lg">
+              {profile?.first_name ? profile.first_name[0] : 'U'}
+            </div>
+            <div>
+              <h2 className="text-base font-semibold">
+                {profile ? `${profile.first_name} ${profile.last_name}` : user.email}
+              </h2>
+              <p className="text-xs text-indigo-300">Student</p>
+            </div>
+          </div>
+        </footer>
+      </aside>
+
+      {/* Main content */}
+      <main className="flex-1 p-12 w-full overflow-auto">
+        <header className="flex justify-between items-center mb-10">
+          <h2 className="text-4xl font-extrabold text-gray-800">
+            Welcome, {profile ? `${profile.first_name} ${profile.last_name}` : user.email}
+          </h2>
+          <button
+            onClick={logout}
+            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+          >
+            Logout
+          </button>
+        </header>
+
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mb-12">
+          {/* Create Project Form */}
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-2xl font-semibold mb-4">Create New Project</h3>
+            <form onSubmit={createProject} className="flex flex-col gap-4">
+              <input
+                value={newProjectName}
+                onChange={(e) => setNewProjectName(e.target.value)}
+                placeholder="Project name"
+                className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                required
+              />
+              <textarea
+                value={newProjectDesc}
+                onChange={(e) => setNewProjectDesc(e.target.value)}
+                placeholder="Project description"
+                className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <button
+                type="submit"
+                className="bg-indigo-600 text-white py-3 rounded-md hover:bg-indigo-700 transition"
+              >
+                Create Project
+              </button>
+            </form>
+          </div>
+
+          {/* Join Project Form */}
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-2xl font-semibold mb-4">Join a Project</h3>
+            <form onSubmit={joinProject} className="flex flex-col gap-4">
+              <input
+                value={joinKey}
+                onChange={(e) => setJoinKey(e.target.value)}
+                placeholder="Enter project join key"
+                className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              />
+              <button
+                type="submit"
+                className="bg-green-600 text-white py-3 rounded-md hover:bg-green-700 transition"
+              >
+                Join Project
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <section>
+          <h3 className="text-3xl font-bold mb-6">Active Projects</h3>
+          {projects.length === 0 ? (
+            <p className="text-gray-500">You don't have any projects yet.</p>
+          ) : (
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 w-full">
+              {projects.map((p) => (
+                <ProjectCard key={p.id} project={p} userId={user.id} />
+              ))}
+            </div>
+          )}
+        </section>
+      </main>
+    </div>
   )
 }
 
