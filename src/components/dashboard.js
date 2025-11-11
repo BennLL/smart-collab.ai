@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import ProjectCard from './projectCard'
+import { useNavigate } from 'react-router-dom'
 
 function Dashboard({ session }) {
   const [projects, setProjects] = useState([])
@@ -10,6 +11,7 @@ function Dashboard({ session }) {
   const [profile, setProfile] = useState(null)
 
   const user = session?.user
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -97,8 +99,8 @@ function Dashboard({ session }) {
   }
 
   const logout = async () => {
-    await supabase.auth.signOut()
-  }
+    await supabase.auth.signOut();
+  };
 
   return (
     <div className="flex min-h-screen w-full bg-gray-50">
@@ -109,7 +111,7 @@ function Dashboard({ session }) {
         </div>
 
         <div className="border-b-2 border-gray-300 mb-4">
-          <nav className="flex flex-col gap-4 text-indigo-200 grow mb-4">
+          <nav className="items-start flex flex-col gap-4 text-indigo-200 grow mb-4">
             <button className="text-lg font-medium hover:text-white transition">Dashboard</button>
             <button className="text-lg font-medium hover:text-white transition">Projects</button>
             <button className="text-lg font-medium hover:text-white transition">Settings</button>

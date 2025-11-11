@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from './lib/supabaseClient';
 import Auth from './components/Auth';
 import Dashboard from './components/dashboard';
+import ProjectPage from './components/projectPage';
 
 function App() {
   const [session, setSession] = useState(null);
@@ -33,6 +34,12 @@ function App() {
       <Route
         path="/dashboard/*"
         element={session ? <Dashboard session={session} /> : <Navigate to="/login" replace />}
+      />
+
+      {/* Project Page*/}
+      <Route
+        path="/project/:id"
+        element={session ? <ProjectPage /> : <Navigate to="/login" replace />}
       />
 
       {/* Default route */}
