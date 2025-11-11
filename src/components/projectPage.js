@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 
@@ -16,22 +16,24 @@ function ProjectPage() {
     fetchProject()
     fetchTasks()
     fetchFiles()
-  }, [id])
+  }, [id, fetchProject, fetchTasks, fetchFiles])
 
-  const fetchProject = async () => {
+
+
+  const fetchProject = useCallback(async () => {
     const { data, error } = await supabase.from('projects').select('*').eq('id', id).single()
     if (!error) setProject(data)
-  }
+  }, [id])
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     const { data } = await supabase.from('tasks').select('*').eq('project_id', id).order('created_at', { ascending: false })
     setTasks(data || [])
-  }
+  }, [id])
 
-  const fetchFiles = async () => {
+  const fetchFiles = useCallback(async () => {
     const { data } = await supabase.from('project_files').select('*').eq('project_id', id).order('uploaded_at', { ascending: false })
     setFiles(data || [])
-  }
+  }, [id])
 
   const createTask = async (e) => {
     e.preventDefault()
@@ -49,7 +51,7 @@ function ProjectPage() {
     e.preventDefault()
     if (!selectedFile) return alert('No file selected')
     setLoading(true)
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const {  error: uploadError } = await supabase.storage // might need data: uploadData,
       .from('project_uploads')
       .upload(`projects/${id}/${selectedFile.name}`, selectedFile)
     if (uploadError) {
