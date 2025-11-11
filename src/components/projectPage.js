@@ -12,14 +12,6 @@ function ProjectPage() {
   const [selectedFile, setSelectedFile] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    fetchProject()
-    fetchTasks()
-    fetchFiles()
-  }, [id, fetchProject, fetchTasks, fetchFiles])
-
-
-
   const fetchProject = useCallback(async () => {
     const { data, error } = await supabase.from('projects').select('*').eq('id', id).single()
     if (!error) setProject(data)
@@ -34,6 +26,12 @@ function ProjectPage() {
     const { data } = await supabase.from('project_files').select('*').eq('project_id', id).order('uploaded_at', { ascending: false })
     setFiles(data || [])
   }, [id])
+
+  useEffect(() => {
+    fetchProject()
+    fetchTasks()
+    fetchFiles()
+  }, [id, fetchProject, fetchTasks, fetchFiles])
 
   const createTask = async (e) => {
     e.preventDefault()
@@ -51,7 +49,7 @@ function ProjectPage() {
     e.preventDefault()
     if (!selectedFile) return alert('No file selected')
     setLoading(true)
-    const {  error: uploadError } = await supabase.storage // might need data: uploadData,
+    const { error: uploadError } = await supabase.storage // might need data: uploadData,
       .from('project_uploads')
       .upload(`projects/${id}/${selectedFile.name}`, selectedFile)
     if (uploadError) {
