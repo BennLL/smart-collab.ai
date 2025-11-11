@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import ProjectCard from './projectCard'
 import { useNavigate } from 'react-router-dom'
@@ -11,7 +11,6 @@ function Dashboard({ session }) {
   const [profile, setProfile] = useState(null)
 
   const user = session?.user
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
