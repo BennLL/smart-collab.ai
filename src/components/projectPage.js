@@ -12,11 +12,11 @@ function ProjectPage() {
   const [selectedFile, setSelectedFile] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  // useEffect(() => {
-  //   fetchProject()
-  //   fetchTasks()
-  //   fetchFiles()
-  // }, [id])
+  useEffect(() => {
+    fetchProject()
+    fetchTasks()
+    fetchFiles()
+  }, [id])
 
   const fetchProject = async () => {
     const { data, error } = await supabase.from('projects').select('*').eq('id', id).single()
